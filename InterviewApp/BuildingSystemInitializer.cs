@@ -10,20 +10,9 @@ namespace InterviewApp
             var system = new BuildingSystemRoot();
 
             // Wire up events to handle automatic printing to stdout
-            system.StructureChanged += () =>
-            {
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine("\n[EVENT: Tree Structure Changed]");
-                Console.ResetColor();
-                Console.WriteLine(system.GetTreeRepresentation());
-            };
+            system.StructureChanged += () => HandleStructureChanged(system);
 
-            system.DevicePropertyChanged += (device, propertyName) =>
-            {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine($"[EVENT: Device Property Changed] -> Device: {device.Id} ({device.Name}), Property: '{propertyName}', State: {device.GetCurrentState()}");
-                Console.ResetColor();
-            };
+            system.DevicePropertyChanged += HandleDevicePropertyChanged;
 
             Console.WriteLine("Initializing Building Management System...");
 
@@ -51,6 +40,21 @@ namespace InterviewApp
             system.AddDeviceToGroup("floor_2", new CardReader("cr_2_1", "Roof Card Reader", "1234567890123456"));
 
             return system;
+        }
+        
+        private static void HandleStructureChanged(BuildingSystemRoot system)
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("\n[EVENT: Tree Structure Changed]");
+            Console.ResetColor();
+            Console.WriteLine(system.GetTreeRepresentation());
+        }
+        
+        private static void HandleDevicePropertyChanged(BaseDeviceNode device, string propertyName)
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"[EVENT: Device Property Changed] -> Device: {device.Id} ({device.Name}), Property: '{propertyName}', State: {device.GetCurrentState()}");
+            Console.ResetColor();
         }
     }
 }
